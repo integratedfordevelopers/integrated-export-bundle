@@ -1,0 +1,16 @@
+{
+    "name": "integrated/export-bundle",
+    "description": "Integrated Export Bundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vasil Pascal",
+            "email": "developer.optimum@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpoffice/phpexcel" : "~1.8.1"
+    }
+}

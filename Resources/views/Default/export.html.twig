@@ -1,0 +1,25 @@
+{% extends 'IntegratedContentBundle::base.html.twig' %}
+{% block content %}
+    {% block crumbs %}
+        <ol class="breadcrumb">
+            <li>
+                <a href="{{ path('integrated_export_homepage') }}">{% trans %}Home{% endtrans %}</a>
+            </li>
+            <li class="active">{% trans %}Export{% endtrans %}</li>
+        </ol>
+    {% endblock %}
+    <div class="content_column_inner export-page">
+        <h4>{{ 'Choose format of export for %contentType% content type.'|trans({'%contentType%': contentType.name}) }}</h4>
+
+        <div class="export-formats">
+            <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'csv', 'contentType': contentType.id}) }}">CSV</a>
+            <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'xml', 'contentType': contentType.id}) }}">XML</a>
+            <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'xlsx', 'contentType': contentType.id}) }}">XLSX</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+    <link rel="stylesheet" type="text/css" href="{{ asset('bundles/integratedexport/css/export_bundle.css') }}" />
+{% endblock %}
