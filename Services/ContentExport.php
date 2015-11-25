@@ -1,5 +1,5 @@
 <?php
-namespace Integrated\ExportBundle\Services;
+namespace Integrated\Bundle\ExportBundle\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Integrated\Bundle\ContentBundle\Document\Channel\Channel;

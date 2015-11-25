@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Integrated\ExportBundle\EventListener;
+namespace Integrated\Bundle\ExportBundle\EventListener;
 
 use Integrated\Bundle\MenuBundle\Event\ConfigureMenuEvent;
 

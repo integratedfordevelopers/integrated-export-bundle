@@ -1,6 +1,6 @@
 <?php
 
-namespace Integrated\ExportBundle\Controller;
+namespace Integrated\Bundle\ExportBundle\Controller;
 
 use Integrated\Bundle\ContentBundle\Document\ContentType\ContentType;
 use Integrated\Common\Form\Mapping\MetadataFactoryInterface;

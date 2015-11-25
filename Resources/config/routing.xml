@@ -4,13 +4,13 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="integrated_export_homepage" path="/admin/export">
+    <route id="integrated_export_homepage" path="/export">
         <default key="_controller">IntegratedExportBundle:Default:index</default>
     </route>
-    <route id="integrated_export_select" path="/admin/export/{contentType}">
+    <route id="integrated_export_select" path="/export/{contentType}">
         <default key="_controller">IntegratedExportBundle:Default:export</default>
     </route>
-    <route id="integrated_export_generate" path="/admin/export/{contentType}/{format}">
+    <route id="integrated_export_generate" path="/export/{contentType}/{format}">
         <default key="_controller">IntegratedExportBundle:Default:generate</default>
     </route>
 </routes>

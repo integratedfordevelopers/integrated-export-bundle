@@ -1,6 +1,6 @@
 <?php
 
-namespace Integrated\ExportBundle\Tests\Controller;
+namespace Integrated\Bundle\ExportBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
