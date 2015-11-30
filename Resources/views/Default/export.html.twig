@@ -12,8 +12,8 @@
         <h4>{{ 'Choose format of export for %contentType% content type.'|trans({'%contentType%': contentType.name}) }}</h4>
 
         <div class="export-formats">
-            <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'csv', 'contentType': contentType.id}) }}">CSV</a>
             <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'xml', 'contentType': contentType.id}) }}">XML</a>
+            <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'csv', 'contentType': contentType.id}) }}">CSV</a>
             <a class="btn btn-info" href="{{ path('integrated_export_generate', {'format': 'xlsx', 'contentType': contentType.id}) }}">XLSX</a>
         </div>
     </div>

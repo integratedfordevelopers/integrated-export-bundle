@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Class DefaultController
  * @package Integrated\ExportBundle\Controller
- * @author Vasil Pascal
+ * @author Vasil Pascal <developer.optimum@gmail.com>
  */
 class DefaultController extends Controller
 {
@@ -38,7 +38,7 @@ class DefaultController extends Controller
 
         return $this->render('IntegratedExportBundle:Default:index.html.twig', array(
             'documents' => $documents,
-            'documentTypes' => $documentTypes
+            'documentTypes' => $documentTypes,
         ));
     }
 
@@ -52,25 +52,21 @@ class DefaultController extends Controller
     }
 
     /**
-     * @param $format
-     * @param ContentType|null $contentType
+     * @param ContentType $contentType
+     * @param string      $format
      * @return Response|\Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function generateAction(ContentType $contentType = null, $format)
+    public function generateAction(ContentType $contentType, $format)
     {
         switch ($format) {
             case "xml":
                 return $this->get('integrated.export_service')->generateXml($contentType);
                 break;
             case "csv":
-                return $this->get('integrated.export_service')->generateCSV($contentType);
-                break;
             case "xlsx":
-                return $this->get('integrated.export_service')->generateXLSX($contentType);
+                return $this->get('integrated.export_service')->generateTable($contentType, $format);
                 break;
         }
-
-        $a = 1;
 
         return $this->createNotFoundException();
     }

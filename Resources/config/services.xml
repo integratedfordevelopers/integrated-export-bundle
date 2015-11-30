@@ -6,7 +6,7 @@
 
 
     <services>
-        <service id="integrated.export_service" class="Integrated\ExportBundle\Services\ContentExport">
+        <service id="integrated.export_service" class="Integrated\Bundle\ExportBundle\Services\ContentExport">
             <argument type="service" id="doctrine.odm.mongodb.document_manager" />
         </service>
     </services>

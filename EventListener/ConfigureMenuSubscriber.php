@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 /**
  * Event subscriber for adding menu items to integrated_menu
  *
- * @author Jeroen van Leeuwen <jeroen@e-active.nl>
+ * @author Vasil Pascal <developer.optimum@gmail.com>
  */
 class ConfigureMenuSubscriber implements EventSubscriberInterface
 {
@@ -45,7 +45,7 @@ class ConfigureMenuSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            ConfigureMenuEvent::CONFIGURE => 'onMenuConfigure'
+            ConfigureMenuEvent::CONFIGURE => 'onMenuConfigure',
         );
     }
 
@@ -59,7 +59,7 @@ class ConfigureMenuSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if (1 || $this->authorizationChecker->isGranted(self::ROLE_ADMIN)) {
+        if ($this->authorizationChecker->isGranted(self::ROLE_ADMIN)) {
             $exportMenu = $menu->addChild('Export');
             $exportMenu->addChild('Export', array('route' => 'integrated_export_homepage'));
         }

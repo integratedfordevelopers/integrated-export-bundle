@@ -17,6 +17,12 @@ class ContentExport
     /** @var DocumentManager */
     private $dm;
 
+    /** @var int */
+    private $rowNumb = 1;
+
+    /** @var float */
+    private $startTime;
+
     /**
      * ContentExport constructor.
      * @param DocumentManager $dm
@@ -24,6 +30,7 @@ class ContentExport
     public function __construct(DocumentManager $dm)
     {
         $this->dm = $dm;
+        $this->startTime = microtime(1);
     }
 
     /**
@@ -74,7 +81,17 @@ class ContentExport
 
                 /* @TODO add data from Embed and Relation Classes */
                 if (is_array($value)) {
+                    /**/
+                }
 
+                /* About 5 seconds until to throwing exception with "execution time exceeded", abort export */
+                $executionTime = microtime(1) - $this->startTime;
+                $allowedTime = ini_get('max_execution_time');
+                if ($allowedTime - $executionTime < 5) {
+                    $partialExport = $xml->addChild('PARTIAL_EXPORT');
+                    $partialExport->addChild('message', 'THIS IS PARTIAL EXPORT');
+
+                    return new Response($xml->asXML(), 200, ['Content-type' => 'text/xml']);
                 }
             }
         }
@@ -82,7 +99,12 @@ class ContentExport
         return new Response($xml->asXML(), 200, ['Content-type' => 'text/xml']);
     }
 
-    public function generateCSV(ContentType $contentType)
+    /**
+     * @param ContentType $contentType
+     * @param string      $format
+     * @return Response
+     */
+    public function generateTable(ContentType $contentType, $format)
     {
         $allContent = $this->dm
             ->createQueryBuilder('IntegratedContentBundle:Content\Content')
@@ -96,13 +118,12 @@ class ContentExport
         }
         unset($fieldNames['class']);
 
-        $handle = tmpfile();
-        $path = stream_get_meta_data($handle);
+        $handle = $format == 'csv' ? tmpfile() : new \PHPExcel();
         $columnNames = ['id', 'contentType', 'createdAt', 'updatedAt', 'startDate', 'endDate', 'channels'];
         foreach ($allContent as $content) {
-
             /* main fields*/
-            $channelIds = array_map(function($channel) {return $channel['$id'];}, $content['channels']);
+            $channelIds = array_map(function ($channel) { return $channel['$id']; }, $content['channels']);
+
             $values = [
                 'id' => $content['_id'],
                 'contentType' => $content['contentType'],
@@ -110,7 +131,7 @@ class ContentExport
                 'updatedAt' => date('Y-m-d H:i:s', $content['updatedAt']->sec),
                 'startDate' => date('Y-m-d H:i:s', $content['publishTime']['startDate']->sec),
                 'endDate' => date('Y-m-d H:i:s', $content['publishTime']['endDate']->sec),
-                'channels' => implode(',', $channelIds)
+                'channels' => implode(',', $channelIds),
             ];
             /* end main fields */
 
@@ -119,8 +140,7 @@ class ContentExport
                 if (!in_array($name, $mainFields, true)) {
                     if (isset($content[$name]) && !is_array($content[$name]) && !is_object($content[$name])) {
                         $values[] = $content[$name];
-                    }
-                    else {
+                    } else {
                         $values[] = '';
                     }
 
@@ -130,21 +150,66 @@ class ContentExport
                 }
             }
 
+            /* add column names*/
             if (isset($columnNames)) {
-                fputcsv($handle, $columnNames);
+                $this->addRow($columnNames, $handle, $format);
                 unset($columnNames);
             }
 
-            fputcsv($handle, $values);
+            $this->addRow($values, $handle, $format);
+
+            /* Until 5 seconds to throwing exception with "execution time exceeded", abort export */
+            $executionTime = microtime(1) - $this->startTime;
+            $allowedTime = ini_get('max_execution_time');
+            if ($allowedTime - $executionTime < 5) {
+                $partial = array_fill(0, count($values), 'PARTIAL_EXPORT');
+                $this->addRow($partial, $handle, $format);
+
+                return $this->getResponse($format, $handle, $contentType);
+            }
         }
 
-        return new Response(file_get_contents($path['uri']), 200, ['Content-type' => 'text/csv']);
+        return $this->getResponse($format, $handle, $contentType);
     }
 
-    public function generateXLSX(ContentType $contentType)
+    /**
+     * @param $values
+     * @param $handle
+     * @param $format
+     */
+    private function addRow($values, $handle, $format)
     {
-
-        return new Response(file_get_contents($path['uri']), 200, ['Content-type' => 'text/csv']);
+        if ($format == 'csv') {
+            fputcsv($handle, $values);
+        } else {
+            $handle->setActiveSheetIndex(0)->fromArray($values, null, 'A'.$this->rowNumb);
+            $this->rowNumb++;
+        }
     }
 
+    /**
+     *
+     * @param $format
+     * @param $handle
+     * @param $contentType
+     * @return Response
+     * @throws \PHPExcel_Reader_Exception
+     */
+    private function getResponse($format, $handle, $contentType)
+    {
+        if ($format == 'csv') {
+            $path = stream_get_meta_data($handle);
+
+            return new Response(file_get_contents($path['uri']), 200, ['Content-type' => 'text/csv']);
+        } else {
+            $path = stream_get_meta_data(tmpfile());
+            $objWriter = \PHPExcel_IOFactory::createWriter($handle, 'Excel2007');
+            $objWriter->save($path['uri']);
+
+            return new Response(file_get_contents($path['uri']), 200, [
+                'Content-type' => 'application/vnd.ms-excel',
+                'Content-Disposition' => 'attachment;filename="'.$contentType->getName().'.xlsx"',
+            ]);
+        }
+    }
 }
