@@ -3,17 +3,21 @@
 namespace Integrated\Bundle\ExportBundle\Controller;
 
 use Integrated\Bundle\ContentBundle\Document\ContentType\ContentType;
+use Integrated\Bundle\ExportBundle\EventListener\ConfigureMenuSubscriber;
 use Integrated\Common\Form\Mapping\MetadataFactoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class DefaultController
- * @package Integrated\ExportBundle\Controller
  * @author Vasil Pascal <developer.optimum@gmail.com>
  */
 class DefaultController extends Controller
 {
+    const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_EXPORT = 'ROLE_EXPORT';
+
     /**
      * @var string
      */
@@ -29,6 +33,8 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        $this->denyAccessUnlessGranted([self::ROLE_ADMIN, self::ROLE_EXPORT]);
+
         /* @var $dm \Doctrine\ODM\MongoDB\DocumentManager */
         $dm = $this->get('doctrine_mongodb')->getManager();
         $documents = $dm->getRepository($this->contentTypeClass)->findAll();
@@ -48,6 +54,8 @@ class DefaultController extends Controller
      */
     public function exportAction(ContentType $contentType = null)
     {
+        $this->denyAccessUnlessGranted([self::ROLE_ADMIN, self::ROLE_EXPORT]);
+
         return $this->render("@IntegratedExport/Default/export.html.twig", compact('contentType'));
     }
 
@@ -58,6 +66,8 @@ class DefaultController extends Controller
      */
     public function generateAction(ContentType $contentType, $format)
     {
+        $this->denyAccessUnlessGranted([self::ROLE_ADMIN, self::ROLE_EXPORT]);
+
         switch ($format) {
             case "xml":
                 return $this->get('integrated.export_service')->generateXml($contentType);

@@ -25,6 +25,7 @@ class ConfigureMenuSubscriber implements EventSubscriberInterface
 {
     const MENU = 'integrated_menu';
     const ROLE_ADMIN = 'ROLE_ADMIN';
+    const ROLE_EXPORT = 'ROLE_EXPORT';
 
     /**
      * @var AuthorizationCheckerInterface
@@ -59,7 +60,7 @@ class ConfigureMenuSubscriber implements EventSubscriberInterface
             return;
         }
 
-        if ($this->authorizationChecker->isGranted(self::ROLE_ADMIN)) {
+        if ($this->authorizationChecker->isGranted([self::ROLE_ADMIN, self::ROLE_EXPORT])) {
             $exportMenu = $menu->addChild('Export');
             $exportMenu->addChild('Export', array('route' => 'integrated_export_homepage'));
         }
