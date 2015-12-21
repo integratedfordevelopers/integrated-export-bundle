@@ -1,0 +1,9 @@
+.export-page h4 {
+    margin-bottom: 20px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #1b6d85;
+}
+
+.export-formats a {
+    margin-right: 5px;
+}
