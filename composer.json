@@ -1,0 +1,28 @@
+{
+    "name": "integrated/export-bundle",
+    "description": "Integrated Export Bundle",
+    "type": "symfony-bundle",
+    "keywords": ["Integrated", "Export"],
+    "homepage": "http://www.integratedfordevelopers.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Vasil Pascal",
+            "email": "developer.optimum@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpoffice/phpexcel" : "~1.8.1"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Integrated\\Bundle\\ExportBundle\\" : ""
+        }
+    },
+    "extra" : {
+        "branch-alias" : {
+            "dev-master" : "0.0.1-dev"
+        }
+    }
+}

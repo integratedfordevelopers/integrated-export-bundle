@@ -1,0 +1,41 @@
+{% extends 'IntegratedContentBundle::base.html.twig' %}
+{% block content %}
+
+    <div class="content_columns_holder">
+        <div class="content_column_inner">
+
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
+                    <th>{% trans %}Created{% endtrans %}</th>
+                    <th>{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for document in documents %}
+                    <tr>
+                        <td>
+                            <a href="{{ path('integrated_content_content_type_show', {'id': document.id}) }}">{{ document.name }}</a>
+                        </td>
+                        <td>{{ document.id }}</td>
+                        <td>{{ document.createdAt|date }}</td>
+                        <td>
+                            <a class="btn btn-info btn-xs" href="{{ path('integrated_export_select', {'contentType': document.id}) }}" title="{% trans %}Edit{% endtrans %}">
+                                {{ 'Export'|trans }}
+                            </a>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">
+                            {% trans %}No content types added{% endtrans %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
