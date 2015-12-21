@@ -16,9 +16,7 @@
                 <tbody>
                 {% for document in documents %}
                     <tr>
-                        <td>
-                            <a href="{{ path('integrated_content_content_type_show', {'id': document.id}) }}">{{ document.name }}</a>
-                        </td>
+                        <td>{{ document.name }}</td>
                         <td>{{ document.id }}</td>
                         <td>{{ document.createdAt|date }}</td>
                         <td>

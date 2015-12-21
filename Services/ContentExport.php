@@ -69,8 +69,10 @@ class ContentExport
             $publishTime->addChild('endTime', date('Y-m-d H:i:s', $content['publishTime']['endDate']->sec));
 
             $channels = $node->addChild('channels');
-            foreach ($content['channels'] as $channel) {
-                $channels->addChild('channel', $channel['$id']);
+            if (isset($content['channels'])) {
+                foreach ($content['channels'] as $channel) {
+                    $channels->addChild('channel', $channel['$id']);
+                }
             }
             /* main fields end */
 
