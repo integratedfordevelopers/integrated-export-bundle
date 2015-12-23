@@ -12,7 +12,7 @@ This bundle can be installed following these steps:
 
 ### Install using composer ###
 
-    $ php composer.phar require integrated/export-bundle:~0.1
+    $ php composer.phar require integrated/export-bundle:~1.0
 
 ### Enable the bundle ###
 
