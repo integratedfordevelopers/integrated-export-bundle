@@ -1,6 +1,6 @@
 {
     "name": "integrated/export-bundle",
-    "description": "Integrated Export Bundle",
+    "description": "Exports your Integrated content per content type to xml, csv or xlsx",
     "type": "symfony-bundle",
     "keywords": ["Integrated", "Export"],
     "homepage": "http://www.integratedfordevelopers.com",
@@ -18,11 +18,6 @@
     "autoload" : {
         "psr-4" : {
             "Integrated\\Bundle\\ExportBundle\\" : ""
-        }
-    },
-    "extra" : {
-        "branch-alias" : {
-            "dev-master" : "0.0.1-dev"
         }
     }
 }
