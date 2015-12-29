@@ -7,13 +7,17 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Vasil Pascal",
-            "email": "developer.optimum@gmail.com"
+            "name": "e-Active",
+            "email": "info@e-active.nl"
         }
     ],
     "minimum-stability": "stable",
     "require": {
         "phpoffice/phpexcel" : "~1.8.1"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "2.*",
+        "phpunit/phpunit": "~4.8"
     },
     "autoload" : {
         "psr-4" : {

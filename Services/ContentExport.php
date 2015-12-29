@@ -1,4 +1,14 @@
 <?php
+
+/*
+ * This file is part of the Integrated package.
+ *
+ * (c) e-Active B.V. <integrated@e-active.nl>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Integrated\Bundle\ExportBundle\Services;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
@@ -124,7 +134,9 @@ class ContentExport
         $columnNames = ['id', 'contentType', 'createdAt', 'updatedAt', 'startDate', 'endDate', 'channels'];
         foreach ($allContent as $content) {
             /* main fields*/
-            $channelIds = array_map(function ($channel) { return $channel['$id']; }, $content['channels']);
+            $channelIds = array_map(function ($channel) {
+                return $channel['$id'];
+            }, $content['channels']);
 
             $values = [
                 'id' => $content['_id'],
