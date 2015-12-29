@@ -124,7 +124,9 @@ class ContentExport
         $columnNames = ['id', 'contentType', 'createdAt', 'updatedAt', 'startDate', 'endDate', 'channels'];
         foreach ($allContent as $content) {
             /* main fields*/
-            $channelIds = array_map(function ($channel) { return $channel['$id']; }, $content['channels']);
+            $channelIds = array_map(function ($channel) {
+                return $channel['$id'];
+            }, $content['channels']);
 
             $values = [
                 'id' => $content['_id'],
