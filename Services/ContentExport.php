@@ -88,7 +88,8 @@ class ContentExport
 
             foreach ($content as $name => $value) {
                 if (!in_array($name, $mainFields) && is_scalar($value)) {
-                    $node->addChild($name, $value);
+                    $node->addChild($name);
+                    $node->$name = $value;
                 }
 
                 /* @TODO add data from Embed and Relation Classes */
@@ -134,9 +135,13 @@ class ContentExport
         $columnNames = ['id', 'contentType', 'createdAt', 'updatedAt', 'startDate', 'endDate', 'channels'];
         foreach ($allContent as $content) {
             /* main fields*/
-            $channelIds = array_map(function ($channel) {
-                return $channel['$id'];
-            }, $content['channels']);
+            $channelIds = [];
+
+            if (isset($content['channels'])) {
+                $channelIds = array_map(function ($channel) {
+                    return $channel['$id'];
+                }, $content['channels']);
+            }
 
             $values = [
                 'id' => $content['_id'],
