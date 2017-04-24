@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+
+    <services>
+        <service id="integrated_export.converter.converter_registry" class="Integrated\Bundle\ExportBundle\Converter\ConverterRegistry" />
+
+        <service id="integrated_export.converter.jobs_converter" class="Integrated\Bundle\ExportBundle\Converter\JobsConverter">
+            <argument type="service" id="doctrine_mongodb.odm.document_manager" />
+
+            <tag name="integrated_export.converter" />
+        </service>
+    </services>
+
+</container>
