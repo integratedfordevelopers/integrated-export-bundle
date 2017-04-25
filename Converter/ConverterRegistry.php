@@ -13,6 +13,9 @@ namespace Integrated\Bundle\ExportBundle\Converter;
 
 use Integrated\Common\ContentType\ContentTypeInterface;
 
+/**
+ * @author Jeroen van Leeuwen <jeroen@e-active.nl>
+ */
 class ConverterRegistry
 {
     /**

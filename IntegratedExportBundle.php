@@ -21,6 +21,9 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class IntegratedExportBundle extends Bundle
 {
+    /**
+     * {@inheritdoc}
+     */
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new ConverterPass());
