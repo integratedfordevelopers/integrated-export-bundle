@@ -23,6 +23,11 @@ use Integrated\Common\ContentType\ContentTypeInterface;
 class JobsConverter implements ConverterInterface
 {
     /**
+     * @var array
+     */
+    protected $companies;
+
+    /**
      * @var DocumentManager
      */
     protected $dm;
@@ -48,28 +53,26 @@ class JobsConverter implements ConverterInterface
      */
     public function convert(array $data)
     {
-        $return = [
+        $convert = [
             'job_1_company' => '',
             'job_1_function' => '',
             'job_1_department' => ''
         ];
 
         if (empty($data['jobs'])) {
-            return $return;
+            return $convert;
         }
 
         $job = current($data['jobs']);
 
         if (!empty($job['company']['$id'])) {
-            if ($company = $this->dm->getRepository(Company::class)->find($job['company']['$id'])) {
-                $return['job_1_company'] = $company->getName();
-            }
+            $convert['job_1_company'] = $this->getCompanyName($job['company']['$id']);
         }
 
-        $return['job_1_function'] = empty($job['function']) ? '' : $job['function'] ;
-        $return['job_1_department'] = empty($job['department']) ? '' : $job['department'];
+        $convert['job_1_function'] = empty($job['function']) ? '' : $job['function'] ;
+        $convert['job_1_department'] = empty($job['department']) ? '' : $job['department'];
 
-        return $return;
+        return $convert;
     }
 
     /**
@@ -82,5 +85,37 @@ class JobsConverter implements ConverterInterface
             'Job 1 function',
             'Job 1 department'
         ];
+    }
+
+    /**
+     * @param string $id
+     * @return string
+     */
+    protected function getCompanyName($id)
+    {
+        if (isset($this->getCompanies()[$id])) {
+            return $this->getCompanies()[$id];
+        }
+
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    protected function getCompanies()
+    {
+        if (null === $this->companies) {
+            $query = $this->dm->createQueryBuilder(Company::class)
+                ->hydrate(false)
+                ->getQuery()
+            ;
+
+            foreach ($query->execute() as $company) {
+                $this->companies[$company['_id']] = empty($company['name']) ? '' : $company['name'];
+            }
+        }
+
+        return $this->companies;
     }
 }
