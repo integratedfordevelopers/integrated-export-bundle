@@ -15,6 +15,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Integrated\Bundle\ContentBundle\Document\Channel\Channel;
 use Integrated\Bundle\ContentBundle\Document\Content\Content;
 use Integrated\Bundle\ContentBundle\Document\ContentType\ContentType;
+use Integrated\Bundle\ExportBundle\Converter\ConverterRegistry;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -27,6 +28,11 @@ class ContentExport
     /** @var DocumentManager */
     private $dm;
 
+    /**
+     * @var ConverterRegistry
+     */
+    private $registry;
+
     /** @var int */
     private $rowNumb = 1;
 
@@ -36,10 +42,12 @@ class ContentExport
     /**
      * ContentExport constructor.
      * @param DocumentManager $dm
+     * @param ConverterRegistry $registry
      */
-    public function __construct(DocumentManager $dm)
+    public function __construct(DocumentManager $dm, ConverterRegistry $registry)
     {
         $this->dm = $dm;
+        $this->registry = $registry;
         $this->startTime = microtime(1);
     }
 
@@ -85,7 +93,6 @@ class ContentExport
                 }
             }
             /* main fields end */
-
             foreach ($content as $name => $value) {
                 if (!in_array($name, $mainFields) && is_scalar($value)) {
                     $node->addChild($name);
@@ -96,16 +103,23 @@ class ContentExport
                 if (is_array($value)) {
                     /**/
                 }
+            }
 
-                /* About 5 seconds until to throwing exception with "execution time exceeded", abort export */
-                $executionTime = microtime(1) - $this->startTime;
-                $allowedTime = ini_get('max_execution_time');
-                if ($allowedTime - $executionTime < 5) {
-                    $partialExport = $xml->addChild('PARTIAL_EXPORT');
-                    $partialExport->addChild('message', 'THIS IS PARTIAL EXPORT');
-
-                    return new Response($xml->asXML(), 200, ['Content-type' => 'text/xml']);
+            foreach ($this->registry->getConverters($contentType) as $converter) {
+                foreach ($converter->convert($content) as $key => $value) {
+                    $node->addChild($key);
+                    $node->$key = $value;
                 }
+            }
+
+            /* About 5 seconds until to throwing exception with "execution time exceeded", abort export */
+            $executionTime = microtime(1) - $this->startTime;
+            $allowedTime = ini_get('max_execution_time');
+            if ($allowedTime - $executionTime < 5) {
+                $partialExport = $xml->addChild('PARTIAL_EXPORT');
+                $partialExport->addChild('message', 'THIS IS PARTIAL EXPORT');
+
+                return new Response($xml->asXML(), 200, ['Content-type' => 'text/xml']);
             }
         }
 
@@ -166,6 +180,16 @@ class ContentExport
                     if (isset($columnNames)) {
                         $columnNames[] = $name;
                     }
+                }
+            }
+
+            foreach ($this->registry->getConverters($contentType) as $converter) {
+                if (isset($columnNames)) {
+                    $columnNames = array_merge($columnNames, $converter->getColumns());
+                }
+
+                foreach ($converter->convert($content) as $value) {
+                    $values[] = $value;
                 }
             }
 
