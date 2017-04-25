@@ -49,6 +49,7 @@ class ConverterRegistry
      */
     public function setConverters($converters)
     {
+        $this->converters = [];
         foreach ($converters as $converter) {
             $this->addConverter($converter);
         }
