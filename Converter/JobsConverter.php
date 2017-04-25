@@ -23,11 +23,6 @@ use Integrated\Common\ContentType\ContentTypeInterface;
 class JobsConverter implements ConverterInterface
 {
     /**
-     * @var array
-     */
-    protected $companies;
-
-    /**
      * @var DocumentManager
      */
     protected $dm;
@@ -69,7 +64,7 @@ class JobsConverter implements ConverterInterface
             $convert['job_1_company'] = $this->getCompanyName($job['company']['$id']);
         }
 
-        $convert['job_1_function'] = empty($job['function']) ? '' : $job['function'] ;
+        $convert['job_1_function'] = empty($job['function']) ? '' : $job['function'];
         $convert['job_1_department'] = empty($job['department']) ? '' : $job['department'];
 
         return $convert;
@@ -93,29 +88,14 @@ class JobsConverter implements ConverterInterface
      */
     protected function getCompanyName($id)
     {
-        if (isset($this->getCompanies()[$id])) {
-            return $this->getCompanies()[$id];
-        }
+        $query = $this->dm->createQueryBuilder(Company::class)
+            ->select('name')
+            ->hydrate(false)
+            ->field('id')->equals($id)
+            ->getQuery();
 
-        return '';
-    }
+        $result = $query->getSingleResult();
 
-    /**
-     * @return array
-     */
-    protected function getCompanies()
-    {
-        if (null === $this->companies) {
-            $query = $this->dm->createQueryBuilder(Company::class)
-                ->hydrate(false)
-                ->getQuery()
-            ;
-
-            foreach ($query->execute() as $company) {
-                $this->companies[$company['_id']] = empty($company['name']) ? '' : $company['name'];
-            }
-        }
-
-        return $this->companies;
+        return isset($result['name']) ? $result['name'] : '';
     }
 }
