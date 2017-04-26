@@ -20,14 +20,9 @@ interface ConverterInterface
 {
     /**
      * @param array $data
-     * @return array
+     * @return ConverterValue[]
      */
     public function convert(array $data);
-
-    /**
-     * @return array
-     */
-    public function getColumns();
 
     /**
      * @param ContentTypeInterface $contentType

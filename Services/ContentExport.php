@@ -106,9 +106,9 @@ class ContentExport
             }
 
             foreach ($this->registry->getConverters($contentType) as $converter) {
-                foreach ($converter->convert($content) as $key => $value) {
-                    $node->addChild($key);
-                    $node->$key = $value;
+                foreach ($converter->convert($content) as $value) {
+                    $node->addChild($value->getKey());
+                    $node->{$value->getKey()} = $value->getValue();
                 }
             }
 
@@ -184,12 +184,11 @@ class ContentExport
             }
 
             foreach ($this->registry->getConverters($contentType) as $converter) {
-                if (isset($columnNames)) {
-                    $columnNames = array_merge($columnNames, $converter->getColumns());
-                }
-
                 foreach ($converter->convert($content) as $value) {
-                    $values[] = $value;
+                    if (isset($columnNames)) {
+                        $columnNames[] = $value->getLabel();
+                    }
+                    $values[] = $value->getValue();
                 }
             }
 

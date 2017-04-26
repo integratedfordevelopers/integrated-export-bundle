@@ -49,9 +49,9 @@ class JobsConverter implements ConverterInterface
     public function convert(array $data)
     {
         $convert = [
-            'job_1_company' => '',
-            'job_1_function' => '',
-            'job_1_department' => ''
+            'company' => new ConverterValue('job_1_companny', 'Job 1 company', ''),
+            'function' => new ConverterValue('job_1_function', 'Job 1 function', ''),
+            'department' => new ConverterValue('job_1_department', 'Job 1 department', '')
         ];
 
         if (empty($data['jobs'])) {
@@ -61,25 +61,13 @@ class JobsConverter implements ConverterInterface
         $job = current($data['jobs']);
 
         if (!empty($job['company']['$id'])) {
-            $convert['job_1_company'] = $this->getCompanyName($job['company']['$id']);
+            $convert['company']->setValue($this->getCompanyName($job['company']['$id']));
         }
 
-        $convert['job_1_function'] = empty($job['function']) ? '' : $job['function'];
-        $convert['job_1_department'] = empty($job['department']) ? '' : $job['department'];
+        $convert['function']->setValue(empty($job['function']) ? '' : $job['function']);
+        $convert['department']->setValue(empty($job['department']) ? '' : $job['department']);
 
         return $convert;
-    }
-
-    /**
-     * @return array
-     */
-    public function getColumns()
-    {
-        return [
-            'Job 1 company',
-            'Job 1 function',
-            'Job 1 department'
-        ];
     }
 
     /**
