@@ -8,6 +8,7 @@
     <services>
         <service id="integrated.export_service" class="Integrated\Bundle\ExportBundle\Services\ContentExport">
             <argument type="service" id="doctrine.odm.mongodb.document_manager" />
+            <argument type="service" id="integrated_export.converter.converter_registry" />
         </service>
     </services>
 
