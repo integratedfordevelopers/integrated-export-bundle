@@ -10,11 +10,6 @@ class ConverterValue
     /**
      * @var string
      */
-    protected $key;
-
-    /**
-     * @var string
-     */
     protected $label;
 
     /**
@@ -23,33 +18,13 @@ class ConverterValue
     protected $value;
 
     /**
-     * @param string $key
      * @param string $label
      * @param string $value
      */
-    public function __construct($key, $label, $value)
+    public function __construct($label, $value)
     {
-        $this->key = $key;
         $this->label = $label;
         $this->value = $value;
-    }
-
-    /**
-     * @return string
-     */
-    public function getKey()
-    {
-        return $this->key;
-    }
-
-    /**
-     * @param string $key
-     * @return $this
-     */
-    public function setKey($key)
-    {
-        $this->key = $key;
-        return $this;
     }
 
     /**

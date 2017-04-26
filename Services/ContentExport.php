@@ -106,9 +106,9 @@ class ContentExport
             }
 
             foreach ($this->registry->getConverters($contentType) as $converter) {
-                foreach ($converter->convert($content) as $value) {
-                    $node->addChild($value->getKey());
-                    $node->{$value->getKey()} = $value->getValue();
+                foreach ($converter->convert($content) as $key => $value) {
+                    $node->addChild($key);
+                    $node->$key = $value->getValue();
                 }
             }
 
@@ -137,6 +137,7 @@ class ContentExport
             ->createQueryBuilder('IntegratedContentBundle:Content\Content')
             ->hydrate(false)
             ->field('contentType')->equals($contentType->getId())
+            ->limit(10)
             ->getQuery();
 
         $fieldNames = [];
@@ -242,7 +243,10 @@ class ContentExport
         if ($format == 'csv') {
             $path = stream_get_meta_data($handle);
 
-            return new Response(file_get_contents($path['uri']), 200, ['Content-type' => 'text/csv']);
+            return new Response(file_get_contents($path['uri']), 200, [
+                'Content-type' => 'text/csv',
+                'Content-Disposition' => 'attachment;filename="'.$contentType->getName().'.csv"',
+            ]);
         } else {
             $path = stream_get_meta_data(tmpfile());
             $objWriter = \PHPExcel_IOFactory::createWriter($handle, 'Excel2007');
