@@ -137,7 +137,6 @@ class ContentExport
             ->createQueryBuilder('IntegratedContentBundle:Content\Content')
             ->hydrate(false)
             ->field('contentType')->equals($contentType->getId())
-            ->limit(10)
             ->getQuery();
 
         $fieldNames = [];
