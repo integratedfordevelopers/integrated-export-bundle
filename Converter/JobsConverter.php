@@ -49,6 +49,7 @@ class JobsConverter implements ConverterInterface
     public function convert(array $data)
     {
         $convert = [
+            'portal' => new ConverterValue('Portal', ''),
             'job_1_company' => new ConverterValue('Job 1 company', ''),
             'job_1_function' => new ConverterValue('Job 1 function', ''),
             'job_1_department' => new ConverterValue('Job 1 department', '')
@@ -61,7 +62,10 @@ class JobsConverter implements ConverterInterface
         $job = current($data['jobs']);
 
         if (!empty($job['company']['$id'])) {
-            $convert['job_1_company']->setValue($this->getCompanyName($job['company']['$id']));
+            if ($company = $this->getCompany($job['company']['$id'])) {
+                $convert['job_1_company']->setValue($company['name']);
+                $convert['portal']->setValue(implode(',', $company['channels']));
+            }
         }
 
         $convert['job_1_function']->setValue(empty($job['function']) ? '' : $job['function']);
@@ -72,18 +76,31 @@ class JobsConverter implements ConverterInterface
 
     /**
      * @param string $id
-     * @return string
+     * @return array
      */
-    protected function getCompanyName($id)
+    protected function getCompany($id)
     {
         $query = $this->dm->createQueryBuilder(Company::class)
-            ->select('name')
+            ->select('name', 'channels')
             ->hydrate(false)
             ->field('id')->equals($id)
             ->getQuery();
 
         $result = $query->getSingleResult();
 
-        return isset($result['name']) ? $result['name'] : '';
+        $return = [
+            'name' => isset($result['name']) ? $result['name'] : '',
+            'channels' => []
+        ];
+
+        if (isset($result['channels'])) {
+            foreach ($result['channels'] as $channel) {
+                if (isset($channel['$id'])) {
+                    $return['channels'][] = $channel['$id'];
+                }
+            }
+        }
+
+        return $return;
     }
 }
