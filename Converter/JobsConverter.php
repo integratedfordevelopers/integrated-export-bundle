@@ -49,7 +49,7 @@ class JobsConverter implements ConverterInterface
     public function convert(array $data)
     {
         $convert = [
-            'portal' => new ConverterValue('Portal', ''),
+            'channel' => new ConverterValue('Channel', ''),
             'job_1_company' => new ConverterValue('Job 1 company', ''),
             'job_1_function' => new ConverterValue('Job 1 function', ''),
             'job_1_department' => new ConverterValue('Job 1 department', '')
@@ -64,7 +64,7 @@ class JobsConverter implements ConverterInterface
         if (!empty($job['company']['$id'])) {
             if ($company = $this->getCompany($job['company']['$id'])) {
                 $convert['job_1_company']->setValue($company['name']);
-                $convert['portal']->setValue(implode(',', $company['channels']));
+                $convert['channel']->setValue(implode(',', $company['channels']));
             }
         }
 
