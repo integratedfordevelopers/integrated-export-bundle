@@ -222,6 +222,10 @@ class ContentExport
     private function addRow($values, $handle, $format)
     {
         if ($format == 'csv') {
+            $values = array_map(function ($value) {
+                return str_replace(["\n", "\r", "\r\n", "\n\r"], '', $value);
+            }, $values);
+
             fputcsv($handle, $values);
         } else {
             $handle->setActiveSheetIndex(0)->fromArray($values, null, 'A'.$this->rowNumb);
