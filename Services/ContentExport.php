@@ -222,7 +222,7 @@ class ContentExport
     private function addRow($values, $handle, $format)
     {
         if ($format == 'csv') {
-            fputcsv($handle, $values);
+            fputcsv($handle, $values, ';');
         } else {
             $handle->setActiveSheetIndex(0)->fromArray($values, null, 'A'.$this->rowNumb);
             $this->rowNumb++;
